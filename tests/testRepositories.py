@@ -1,8 +1,15 @@
 import repositories
 import domain
+import utils
 
 class TestStudentRepository:
 
+	def __init__(self):
+		"""
+		A function that initializes the instance of the TestStudentRepository class.
+		"""
+		self.__randomGenerator = utils.RandomGenerator()
+	
 	def testAddStudent(self):
 		"""
 		 A function that tests if the addStudent functions works properly.
@@ -12,12 +19,17 @@ class TestStudentRepository:
 		#Test repo is empty
 		assert len(repository) == 0
 		#Test if the student was added
-		student1 = domain.Student(1, "Ionescu", 201)
+		id1 = self.__randomGenerator.generateId()
+		name1 = self.__randomGenerator.generateString()
+		group1 =  self.__randomGenerator.generateNumber()
+		student1 = domain.Student(id1, name1, group1)
 		repository.addStudent(student1)
 		assert len(repository) == 1
 		assert repository.getStudentById(student1.getId()) == student1
 		#Test getting exception when adding a student with the id of an existing student
-		student2 = domain.Student(1, "Andrei", 203)
+		name2 = self.__randomGenerator.generateString()
+		group2 = self.__randomGenerator.generateNumber()
+		student2 = domain.Student(id1, name2, group2)
 		try:
 			repository.addStudent(student2)
 			assert False
@@ -33,8 +45,14 @@ class TestStudentRepository:
 		#Test getAllStudents returns an empty list if there are no students in repo
 		assert len(repository) == 0
 		#Test if 2 students were added
-		student1 = domain.Student(1, "Ionescu", 203)
-		student2 = domain.Student(2, "Georgescu", 204)
+		id1 = self.__randomGenerator.generateId()
+		name1 = self.__randomGenerator.generateString()
+		group1 = self.__randomGenerator.generateNumber()
+		id2 = self.__randomGenerator.generateId()
+		name2 = self.__randomGenerator.generateString()
+		group2 = self.__randomGenerator.generateNumber()
+		student1 = domain.Student(id1, name1, group1)
+		student2 = domain.Student(id2, name2, group2)
 		repository.addStudent(student1)
 		repository.addStudent(student2)
 		assert len(repository) == 2
@@ -50,17 +68,23 @@ class TestStudentRepository:
 		A function that checks if the getStudentById works properly.
 		Raises: AssertionError
 		"""
+		id1 = self.__randomGenerator.generateId()
+		name1 = self.__randomGenerator.generateString()
+		group1 = self.__randomGenerator.generateNumber()
+		id2 = self.__randomGenerator.generateId()
+		name2 = self.__randomGenerator.generateString()
+		group2 = self.__randomGenerator.generateNumber()
 		repository = repositories.StudentsRepository()
-		student1 = domain.Student(1, "Enescu", 201)
-		student2 = domain.Student(2, "Averescu", 203)
+		student1 = domain.Student(id1, name1, group1)
+		student2 = domain.Student(id2, name2, group2)
 		repository.addStudent(student1)
 		repository.addStudent(student2)
 		#Test if the function returns the right student.
-		returnedStudent = repository.getStudentById(2)
+		returnedStudent = repository.getStudentById(id2)
 		assert returnedStudent == student2
 		#Test if the function raises an exception when it is asked to return a student with an id it doesn't have.
 		try:
-			repository.getStudentById(3)
+			repository.getStudentById(self.__randomGenerator.generateId())
 			assert False
 		except Exception:
 			assert True
@@ -71,23 +95,32 @@ class TestStudentRepository:
 		Raises: AssertionError
 		"""
 		repository = repositories.StudentsRepository()
-		student1 = domain.Student(1, "Petrescu", 202)
-		student2 = domain.Student(2, "Popescu", 205)
+		id1 = self.__randomGenerator.generateId()
+		name1 = self.__randomGenerator.generateString()
+		group1 = self.__randomGenerator.generateNumber()
+		id2 = self.__randomGenerator.generateId()
+		name2 = self.__randomGenerator.generateString()
+		group2 = self.__randomGenerator.generateNumber()
+		student1 = domain.Student(id1, name1, group1)
+		student2 = domain.Student(id2, name2, group2)
 		repository.addStudent(student1)
 		repository.addStudent(student2)
 		#Test if the correct student was updated.
-		newStudent = domain.Student(3, "Ionescu", 207)
-		repository.updateStudentById(1, newStudent)
+		id3 = self.__randomGenerator.generateId()
+		name3 = self.__randomGenerator.generateString()
+		group3 = self.__randomGenerator.generateNumber()
+		newStudent = domain.Student(id3, name3, group3)
+		repository.updateStudentById(id1, newStudent)
 		assert repository.getStudentById(newStudent.getId()) == newStudent
 		#Test if the function raises an exception when it can find what student to update.
 		try:
-			repository.updateStudentById(100, newStudent)
+			repository.updateStudentById(self.__randomGenerator.generateId(), newStudent)
 			assert False
 		except Exception:
 			assert True
 		#Test if the function raises an error when it tries to change the id of the student to an id that already exists in the repo.
 		try:
-			repository.updateStudentById(2, newStudent)
+			repository.updateStudentById(id2, newStudent)
 			assert False
 		except Exception:
 			assert True
@@ -98,38 +131,55 @@ class TestStudentRepository:
 		Raises: Assertion Error
 		"""
 		repository = repositories.StudentsRepository()
-		student1 = domain.Student(1, "Ionel", 201)
-		student2 = domain.Student(2, "Cristi", 203)
+		id1 = self.__randomGenerator.generateId()
+		name1 = self.__randomGenerator.generateString()
+		group1 = self.__randomGenerator.generateNumber()
+		id2 = self.__randomGenerator.generateId()
+		name2 = self.__randomGenerator.generateString()
+		group2 = self.__randomGenerator.generateNumber()
+		student1 = domain.Student(id1, name1, group1)
+		student2 = domain.Student(id2, name2, group2)
 		repository.addStudent(student1)
 		repository.addStudent(student2)
 		#Test if the function deletes the correct student1
-		repository.deleteStudentById(1)
+		repository.deleteStudentById(id1)
 		assert len(repository) == 1
 		try:
-			repository.getStudentById(2)
+			repository.getStudentById(id2)
 			assert True
 		except Exception:
 			assert False
 		#Test if the function raises an error when you try to delete a student with an id that isn't present in the repo
 		try:
-			repository.deleteStudentById(3)
+			repository.deleteStudentById(self.__randomGenerator.generateId())
 			assert False
 		except Exception:
 			assert True
 		#Test if the function can delete the remaining student
-		repository.deleteStudentById(2)
+		repository.deleteStudentById(id2)
 		assert len(repository) == 0
 
 class TestProblemsRepository:
 
+	def __init__(self):
+		"""
+		A function that initializes the instance of the TestProblemsRepository class.
+		"""
+		self.__randomGenerator = utils.RandomGenerator()
+		
 	def testAddNewProblem(self):
 		"""
 		A function that tests if the addNewProblem works properly.
 		Raises: Assertion Error.
 		"""
+		labProb1 = self.__randomGenerator.generateProblemId()
+		description1 = self.__randomGenerator.generateString()
+		deadline1 = self.__randomGenerator.generateRandomDate()
+		description2 = self.__randomGenerator.generateString()
+		deadline2 = self.__randomGenerator.generateRandomDate()
 		repository = repositories.ProblemsRepository()
-		problem1 = domain.LaboratoryProblem("1_1", "An easy problem.", "10/30/2023")
-		problem2 = domain.LaboratoryProblem("1_1", "A mind breaking problem.", "12/12/2023")
+		problem1 = domain.LaboratoryProblem(labProb1, description1, deadline1)
+		problem2 = domain.LaboratoryProblem(labProb1, description2, deadline2)
 		#Test if the function can add the problem properly.
 		assert len(repository) == 0
 		repository.addNewProblem(problem1)
@@ -147,17 +197,23 @@ class TestProblemsRepository:
 		A function that tests if the getProblemByLabNumberProblemNumber functions properly.
 		Raises: Assertion Error.
 		"""
+		labProb1 = self.__randomGenerator.generateProblemId()
+		description1 = self.__randomGenerator.generateString()
+		deadline1 = self.__randomGenerator.generateRandomDate()
+		labProb2 = self.__randomGenerator.generateProblemId()
+		description2 = self.__randomGenerator.generateString()
+		deadline2 = self.__randomGenerator.generateRandomDate()
 		repository = repositories.ProblemsRepository()
-		problem1 = domain.LaboratoryProblem("1_1", "An easy one.", "8/22/2021")
-		problem2 = domain.LaboratoryProblem("2_1", "A warm up problem.", "12/12/2012")
+		problem1 = domain.LaboratoryProblem(labProb1, description1, deadline1)
+		problem2 = domain.LaboratoryProblem(labProb2, description2, deadline2)
 		repository.addNewProblem(problem1)
 		repository.addNewProblem(problem2)
 		#Test if the right problem is returned.
-		problem = repository.getProblemByLaboratoryNumberProblemNumber("2_1")
+		problem = repository.getProblemByLaboratoryNumberProblemNumber(labProb2)
 		assert problem == problem2
 		#Test if the function raises an exception when I try to get a problem with a wrong combination of laboratory number and problem number.
 		try:
-			problem = repository.getProblemByLaboratoryNumberProblemNumber("2_2")
+			problem = repository.getProblemByLaboratoryNumberProblemNumber(self.__randomGenerator.generateProblemId())
 			assert False
 		except Exception:
 			assert True
@@ -167,9 +223,15 @@ class TestProblemsRepository:
 		A function that checks if the getAllProblems function works properly.
 		Raises: Assertion Error
 		"""
+		labProb1 = self.__randomGenerator.generateProblemId()
+		description1 = self.__randomGenerator.generateString()
+		deadline1 = self.__randomGenerator.generateRandomDate()
+		labProb2 = self.__randomGenerator.generateProblemId()
+		description2 = self.__randomGenerator.generateString()
+		deadline2 = self.__randomGenerator.generateRandomDate()
 		repository = repositories.ProblemsRepository()
-		problem1 = domain.LaboratoryProblem("1_1", "An easy problem.", "10/10/2022")
-		problem2 = domain.LaboratoryProblem("1_2", "Another easy problem.", "10/11/2023")
+		problem1 = domain.LaboratoryProblem(labProb1, description1, deadline1)
+		problem2 = domain.LaboratoryProblem(labProb2, description2, deadline2)
 		#Test if the function can return an empty list.
 		problems = repository.getAllProblems()
 		assert len(problems) == 0
@@ -185,25 +247,36 @@ class TestProblemsRepository:
 		A function that checks if the function updateProblemByLabNumberProblemNumber functions properly.
 		Raises: Assertion Error
 		"""
+		labProb1 = self.__randomGenerator.generateProblemId()
+		description1 = self.__randomGenerator.generateString()
+		deadline1 = self.__randomGenerator.generateRandomDate()
+		labProb2 = self.__randomGenerator.generateProblemId()
+		description2 = self.__randomGenerator.generateString()
+		deadline2 = self.__randomGenerator.generateRandomDate()
 		repository = repositories.ProblemsRepository()
-		problem1 = domain.LaboratoryProblem("1_1", "An easy problem.", "10/10/2022")
-		problem2 = domain.LaboratoryProblem("1_2", "A more difficult problem.", "10/10/2022")
+		problem1 = domain.LaboratoryProblem(labProb1, description1, deadline1)
+		problem2 = domain.LaboratoryProblem(labProb2, description2, deadline2)
 		repository.addNewProblem(problem1)
 		repository.addNewProblem(problem2)
 		#Test if the right problem is updated
-		newProblem = domain.LaboratoryProblem("2_1", "A warm up problem.", "12/23/2023")
-		repository.updateProblemByLaboratoryNumberProblemNumber("1_2", newProblem)
-		assert repository.getProblemByLaboratoryNumberProblemNumber("2_1") == newProblem
+		labProb3 = self.__randomGenerator.generateProblemId()
+		description3 = self.__randomGenerator.generateString()
+		deadline3 = self.__randomGenerator.generateRandomDate()
+		newProblem = domain.LaboratoryProblem(labProb3, description3, deadline3)
+		repository.updateProblemByLaboratoryNumberProblemNumber(labProb2, newProblem)
+		assert repository.getProblemByLaboratoryNumberProblemNumber(labProb3) == newProblem
 		#Test if the function raises an exception when a combination of laboratory number and problem number that do not exist is input.
 		try:
-			repository.updateProblemByLaboratoryNumberProblemNumber("10_10", newProblem)
+			repository.updateProblemByLaboratoryNumberProblemNumber(self.__randomGenerator.generateProblemId(), newProblem)
 			assert False
 		except Exception:
 			assert True
 		#Test if the function raises an exception when the new combination of laboratory number and problem number coincides with the combination of another problem.
-		anotherNewProblem = domain.LaboratoryProblem("1_1", "Another problem.", "1/1/2001")
+		description4 = self.__randomGenerator.generateString()
+		deadline4 = self.__randomGenerator.generateRandomDate()
+		anotherNewProblem = domain.LaboratoryProblem(labProb1, description4, deadline4)
 		try:
-			repository.updateProblemByLaboratoryNumberProblemNumber("2_1", anotherNewProblem)
+			repository.updateProblemByLaboratoryNumberProblemNumber(labProb3, anotherNewProblem)
 			assert False
 		except Exception:
 			assert True
@@ -213,18 +286,24 @@ class TestProblemsRepository:
 		A function that tests if deleteProblemByLabNumberProblemNumber works properly.
 		Raises: Assertion Error
 		"""
+		labProb1 = self.__randomGenerator.generateProblemId()
+		description1 = self.__randomGenerator.generateString()
+		deadline1 = self.__randomGenerator.generateRandomDate()
+		labProb2 = self.__randomGenerator.generateProblemId()
+		description2 = self.__randomGenerator.generateString()
+		deadline2 = self.__randomGenerator.generateRandomDate()
 		repository = repositories.ProblemsRepository()
-		problem1 = domain.LaboratoryProblem("1_1", "An easy problem.", "10/10/2022")
-		problem2 = domain.LaboratoryProblem("1_2", "Another easy problem.", "10/10/2022")
+		problem1 = domain.LaboratoryProblem(labProb1, description1, deadline1)
+		problem2 = domain.LaboratoryProblem(labProb2, description2, deadline2)
 		repository.addNewProblem(problem1)
 		repository.addNewProblem(problem2)
 		#Test deleting the right problem.
-		repository.deleteProblemByLaboratoryNumberProblemNumber("1_1")
+		repository.deleteProblemByLaboratoryNumberProblemNumber(labProb1)
 		problems = repository.getAllProblems()
 		assert problems[0] == problem2
 		#Test function raising an exception when the input combination of laboratory number and problem number isn't present in the repository.
 		try:
-			repository.deleteProblemByLaboratoryNumberProblemNumber("1_1")
+			repository.deleteProblemByLaboratoryNumberProblemNumber(labProb1)
 			assert False
 		except Exception:
 			assert True

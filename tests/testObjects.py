@@ -46,9 +46,9 @@ class TestObjects:
 		A function that checks if the LaboratoryProblem class works properly.
 		Raises: Assertion Error.
 		"""
-		laboratoryNumberProblemNumber = "1_1"
-		description = "A random problem."
-		deadline = "10/10/2010"
+		laboratoryNumberProblemNumber = self.__randomGenerator.generateProblemId()
+		description = self.__randomGenerator.generateString()
+		deadline = self.__randomGenerator.generateRandomDate()
 		problem1 = domain.LaboratoryProblem(laboratoryNumberProblemNumber, description, deadline)
 
 		#Test getters
@@ -57,9 +57,9 @@ class TestObjects:
 		assert deadline == problem1.getDeadline()
 		
 		#Test setters
-		newlaboratoryNumberProblemNumber = "2_2"
-		newDescription = "A difficult problem."
-		newDeadline = "12/12/2000"
+		newlaboratoryNumberProblemNumber = self.__randomGenerator.generateProblemId()
+		newDescription = self.__randomGenerator.generateString()
+		newDeadline = self.__randomGenerator.generateRandomDate()
 		problem1.setLaboratoryNumberProblemNumber(newlaboratoryNumberProblemNumber)
 		problem1.setDescription(newDescription)
 		problem1.setDeadline(newDeadline)

@@ -34,7 +34,7 @@ class RandomGenerator:
 			raise Exception("There are no ids left.")
 		return randomId
 	
-	def generateProbleId(self):
+	def generateProblemId(self):
 		"""
 		A function that generates a random id for lab problems.
 		Preconditions: -
